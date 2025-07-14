@@ -1,1 +1,4 @@
 hello bro how are you
+
+THIS is added from the docker image git version
+
