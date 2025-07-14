@@ -1,21 +1,19 @@
-FROM alpine:latest
+FROM ubuntu:latest
+RUN apt update && apt install -y git curl unzip gnupg
+# Setup GitHub CLI
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+    gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+    https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+    apt update && apt install -y gh
+CMD ["/bin/bash"]
 
-RUN apk add --no-cache git openssh-client git-lfs
 
-# Configure SSH
-RUN mkdir -p /root/.ssh && \
-    chmod 700 /root/.ssh
 
-# Copy your SSH private and public key into the container
-COPY id_ed25519 /root/.ssh/id_ed25519
-COPY id_ed25519.pub /root/.ssh/id_ed25519.pub
-RUN chmod 600 /root/.ssh/id_ed25519 && \
-    chmod 644 /root/.ssh/id_ed25519.pub
+# docker build -t gh-templab .
+# docker run -it --rm gh-templab
 
-# Add known hosts to prevent man-in-the-middle attacks
-RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
-# Install and configure Git LFS
-RUN git lfs install
+#oprn this running container in the vscode for added security.. 
 
-WORKDIR /workspace
+#link for the extension :- https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack
